@@ -21,7 +21,7 @@ MonoBehaviour:
   maxSpeed: 9
   acceleration: 18
   turnRateDegPerSec: 240
-  drag: 0.3
+  drag: 0.1
   lateralGrip: 8
   driftScrub: 0.35
   visualForwardOffsetDeg: 90
