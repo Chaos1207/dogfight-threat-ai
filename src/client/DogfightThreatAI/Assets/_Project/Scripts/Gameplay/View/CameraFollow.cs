@@ -1,0 +1,102 @@
+using UnityEngine;
+
+namespace DogfightThreatAI.Gameplay.View
+{
+    /// <summary>
+    /// 【表现层】相机跟随 + 前瞻 + 世界边界夹紧（大地图标准做法）。
+    ///
+    ///   · 跟随目标，但**不做硬绑定**：平滑时间 0.1~0.2 秒
+    ///   · **前瞻偏移**：朝移动方向提前看一点，避免目标永远死在屏幕中心
+    ///   · **夹紧到世界边界**：按"相机半视口"来夹，保证永远不会拍到地图外的空白
+    ///
+    /// ⚠️ 不要把 Camera 设为目标的子物体 —— 父子跟随会让镜头跟着目标旋转，晕。
+    /// ⚠️ 跟随必须在 LateUpdate —— 用 Update 会和目标移动抢时序，产生抖动。
+    /// </summary>
+    [RequireComponent(typeof(Camera))]
+    public sealed class CameraFollow : MonoBehaviour
+    {
+        [Header("目标与偏移")]
+        [SerializeField] Transform target;
+        [Tooltip("相机相对目标的偏移。2D 俯视通常是 (0, 0, -10)")]
+        [SerializeField] Vector3 offset = new Vector3(0f, 0f, -10f);
+
+        [Header("跟随手感")]
+        [Tooltip("跟随平滑时间。0 = 硬跟随（会抖），0.1~0.2 = 舒服")]
+        [SerializeField, Min(0f)] float smoothTime = 0.12f;
+
+        [Tooltip("朝「实际移动方向」前瞻的距离（世界单位）。\n" +
+                 "0 = 目标永远钉在屏幕正中心；2~4 = 目标在中心前方，能看出高速掠进")]
+        [SerializeField, Min(0f)] float lookAhead = 3f;
+
+        [Tooltip("前瞻方向的平滑时间，避免转向时镜头甩动")]
+        [SerializeField, Min(0.01f)] float lookAheadSmoothTime = 0.3f;
+
+        [Header("世界边界（大地图必设）")]
+        [Tooltip("勾上后镜头会被限制在地图内，不会拍到地图外的空白")]
+        [SerializeField] bool clampToWorld = true;
+
+        [Tooltip("世界半尺寸（以原点为中心）。例如地图 400×300 → 填 (200, 150)")]
+        [SerializeField] Vector2 worldHalfSize = new Vector2(200f, 150f);
+
+        Camera _camera;
+        Vector3 _velocity;
+        Vector3 _lastTargetPosition;
+        Vector3 _lookDirection;
+        Vector3 _lookDirectionVelocity;
+        bool _hasLastPosition;
+
+        void Awake() => _camera = GetComponent<Camera>();
+
+        public void SetTarget(Transform t)
+        {
+            target = t;
+            _hasLastPosition = false;
+        }
+
+        /// <summary>运行时设置世界半尺寸（例如从关卡配置读）。</summary>
+        public void SetWorldHalfSize(Vector2 half) => worldHalfSize = half;
+
+        void LateUpdate()
+        {
+            if (target == null) return;
+
+            // 用「这一帧目标移动了多少」推断移动方向——不依赖 PlayerController / 机头角度，
+            // 所以 AI、观战、回放复用同一个相机都不用改。
+            Vector3 delta = target.position - _lastTargetPosition;
+            if (_hasLastPosition)
+            {
+                Vector3 desiredDir = delta.magnitude > 1e-5f ? delta.normalized : Vector3.zero;
+                _lookDirection = Vector3.SmoothDamp(_lookDirection, desiredDir,
+                                                    ref _lookDirectionVelocity, lookAheadSmoothTime);
+            }
+            _lastTargetPosition = target.position;
+            _hasLastPosition = true;
+
+            Vector3 desired = target.position + offset + _lookDirection * lookAhead;
+            desired.z = offset.z;                      // 2D：z 永远保持 -10
+
+            if (clampToWorld) desired = ClampInsideWorld(desired);
+
+            transform.position = Vector3.SmoothDamp(transform.position, desired, ref _velocity, smoothTime);
+        }
+
+        /// <summary>
+        /// 用「相机自己的半视口」去夹，而不是直接夹世界半尺寸——
+        /// 否则镜头中心能贴到地图边缘，屏幕边上就会露出一大片地图外的空白。
+        /// </summary>
+        Vector3 ClampInsideWorld(Vector3 p)
+        {
+            if (_camera == null) _camera = GetComponent<Camera>();
+
+            float halfHeight = _camera != null ? _camera.orthographicSize : 5f;
+            float halfWidth  = _camera != null ? halfHeight * Mathf.Max(0.01f, _camera.aspect) : 9f;
+
+            float maxX = Mathf.Max(0f, worldHalfSize.x - halfWidth);
+            float maxY = Mathf.Max(0f, worldHalfSize.y - halfHeight);
+
+            p.x = Mathf.Clamp(p.x, -maxX, maxX);
+            p.y = Mathf.Clamp(p.y, -maxY, maxY);
+            return p;
+        }
+    }
+}

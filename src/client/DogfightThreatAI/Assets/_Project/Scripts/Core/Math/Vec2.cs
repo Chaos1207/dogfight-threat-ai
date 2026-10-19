@@ -1,0 +1,81 @@
+using System;
+
+namespace DogfightThreatAI.Core.Math
+{
+    /// <summary>
+    /// 二维向量。刻意不使用 UnityEngine.Vector2：
+    /// 这样 FlightModel / 威胁网格 / A* 等"模拟层"代码可以完全不依赖 Unity 引擎，
+    /// 以后原样复制进 LogicServer（纯 .NET）即可，不需要改任何一行。
+    /// </summary>
+    [Serializable]
+    public struct Vec2 : IEquatable<Vec2>
+    {
+        public float X;
+        public float Y;
+
+        public Vec2(float x, float y) { X = x; Y = y; }
+
+        public static readonly Vec2 Zero  = new Vec2(0f, 0f);
+        public static readonly Vec2 One   = new Vec2(1f, 1f);
+        public static readonly Vec2 Right = new Vec2(1f, 0f);
+        public static readonly Vec2 Up    = new Vec2(0f, 1f);
+
+        public float SqrMagnitude => X * X + Y * Y;
+        public float Magnitude    => MathF.Sqrt(SqrMagnitude);
+
+        /// <summary>单位化。零向量返回 Zero（不会返回 NaN）。</summary>
+        public Vec2 Normalized
+        {
+            get
+            {
+                float m = Magnitude;
+                return m > 1e-6f ? new Vec2(X / m, Y / m) : Zero;
+            }
+        }
+
+        /// <summary>机头角度（弧度），以 +X 轴为 0，逆时针为正。渲染时转成角度用。</summary>
+        public float AngleRad => MathF.Atan2(Y, X);
+
+        /// <summary>从弧度构造单位向量。</summary>
+        public static Vec2 FromAngle(float radians) => new Vec2(MathF.Cos(radians), MathF.Sin(radians));
+
+        /// <summary>按最大距离向目标靠拢。飞行模型用它产生"惯性滑行"手感。</summary>
+        public static Vec2 MoveTowards(Vec2 current, Vec2 target, float maxDelta)
+        {
+            Vec2 d = target - current;
+            float m = d.Magnitude;
+            if (m <= maxDelta || m < 1e-6f) return target;
+            return current + d * (maxDelta / m);
+        }
+
+        public static float Distance(Vec2 a, Vec2 b) => (a - b).Magnitude;
+        public static float Dot(Vec2 a, Vec2 b)      => a.X * b.X + a.Y * b.Y;
+        public static float Cross(Vec2 a, Vec2 b)    => a.X * b.Y - a.Y * b.X;
+
+        /// <summary>把角度规整到 [-π, π)。渲染插值、威胁评估算"相对方位"时会用到。</summary>
+        public static float NormalizeAngle(float radians)
+        {
+            const float twoPi = 6.28318530718f;
+            radians %= twoPi;
+            if (radians >= 3.14159265359f) radians -= twoPi;
+            else if (radians < -3.14159265359f) radians += twoPi;
+            return radians;
+        }
+
+        public static Vec2 operator +(Vec2 a, Vec2 b) => new Vec2(a.X + b.X, a.Y + b.Y);
+        public static Vec2 operator -(Vec2 a, Vec2 b) => new Vec2(a.X - b.X, a.Y - b.Y);
+        public static Vec2 operator -(Vec2 a)         => new Vec2(-a.X, -a.Y);
+        public static Vec2 operator *(Vec2 a, float s) => new Vec2(a.X * s, a.Y * s);
+        public static Vec2 operator *(float s, Vec2 a) => new Vec2(a.X * s, a.Y * s);
+        public static Vec2 operator /(Vec2 a, float s) => new Vec2(a.X / s, a.Y / s);
+
+        // 和 UnityEngine 的互转：控制层/渲染层不用手写转换代码
+        public static implicit operator Vec2(UnityEngine.Vector2 v)  => new Vec2(v.x, v.y);
+        public static implicit operator UnityEngine.Vector2(Vec2 v)  => new UnityEngine.Vector2(v.X, v.Y);
+
+        public bool Equals(Vec2 other) => X.Equals(other.X) && Y.Equals(other.Y);
+        public override bool Equals(object obj) => obj is Vec2 v && Equals(v);
+        public override int GetHashCode() => X.GetHashCode() ^ (Y.GetHashCode() << 2);
+        public override string ToString() => $"({X:0.###}, {Y:0.###})";
+    }
+}

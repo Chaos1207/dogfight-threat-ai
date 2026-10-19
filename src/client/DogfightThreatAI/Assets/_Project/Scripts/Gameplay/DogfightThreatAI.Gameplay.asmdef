@@ -1,0 +1,16 @@
+{
+    "name": "DogfightThreatAI.Gameplay",
+    "rootNamespace": "DogfightThreatAI.Gameplay",
+    "references": [
+        "DogfightThreatAI.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
