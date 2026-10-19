@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2875681923357343400}
   - component: {fileID: 4733871073791651194}
+  - component: {fileID: 1293666402417591650}
   m_Layer: 0
   m_Name: Art
   m_TagString: Untagged
@@ -97,7 +98,6 @@ GameObject:
   - component: {fileID: 2159651385653498510}
   - component: {fileID: 270979249602941958}
   - component: {fileID: 4886330096741342016}
-  - component: {fileID: 1293666402417591649}
   m_Layer: 0
   m_Name: Player_Ship01
   m_TagString: Untagged
@@ -211,18 +211,18 @@ MonoBehaviour:
   ship: {fileID: 11400000, guid: 4dbb0199af05047499ea40f15819822b, type: 2}
   inputSource: {fileID: 270979249602941958}
   body: {fileID: 3841788131030971619}
-  view: {fileID: 1293666402417591649}
---- !u!114 &1293666402417591649
+  view: {fileID: 1293666402417591650}
+--- !u!114 &1293666402417591650
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5920757651408459525}
+  m_GameObject: {fileID: 1972092411808597225}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 23b00dece7dcfbd4a8c48f6afbcdbcf8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   spriteRenderer: {fileID: 4733871073791651194}
   visualForwardOffsetDeg: 90
