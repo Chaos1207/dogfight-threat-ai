@@ -1,32 +1,23 @@
 using UnityEngine;
 
-namespace DogfightThreatAI.Core.Config
+namespace DogfightThreatAI.Gameplay.Config
 {
     /// <summary>
-    /// 【数据层】一架飞机的"档案"。
-    ///
-    /// 这个类是"先设计数据、再搭系统"的落点：飞机的一切可调项都在这里，
-    /// 系统（FlightModel / PlayerController / PlayerView）只负责读它。
-    ///
-    /// 【为什么它同时是"选角色界面的一条记录"】
-    /// 它同时承担两件事：显示名 + 美术 + 手感数值。
-    /// 加一架新飞机 = 新建一个 .asset + 拖两张图，不改任何代码。
-    ///
-    /// ⚠️ 纪律：这里只放【配置】（不会在运行时改变的值）。
-    ///    当前血量、冷却、位置这类【状态】绝不能放进来——ScriptableObject 是全工程共享的一份，
-    ///    写进去会导致"所有同类飞机一起掉血"。
+    /// 飞机配置资产。保存显示信息、美术引用和飞行参数。
+    /// 该资产仅用于配置，运行状态不写入此处。
+    /// 新增飞机时，新建一个 asset 并填写字段即可，不需要修改代码。
     /// </summary>
     [CreateAssetMenu(menuName = "DogfightThreatAI/Ship Definition", fileName = "Ship_New")]
     public sealed class AircraftData : ScriptableObject
     {
-        // ────────── 显示信息（选角色界面用） ──────────
+        // 显示信息
         [Header("显示")]
         [Tooltip("选角色界面显示的名字")]
         [SerializeField] string displayName = "未命名机型";
         [TextArea(2, 4)]
         [SerializeField] string description = "";
 
-        // ────────── 美术引用（换美术只改这里） ──────────
+        // 美术引用
         [Header("美术")]
         [Tooltip("机身精灵。注意：Sprite 的 Pivot 必须设为 Center，否则旋转时会绕偏")]
         [SerializeField] Sprite bodySprite;
@@ -35,7 +26,7 @@ namespace DogfightThreatAI.Core.Config
         [Tooltip("尾焰/推进器效果。暂时可留空")]
         [SerializeField] GameObject thrusterPrefab;
 
-        // ────────── 飞行参数（手感只调这里） ──────────
+        // 飞行参数
         [Header("速度（单位/秒）")]
         [Tooltip("失速下界：低于它飞机飞不快（以后可以做失速下坠）")]
         [SerializeField] float minSpeed = 2f;

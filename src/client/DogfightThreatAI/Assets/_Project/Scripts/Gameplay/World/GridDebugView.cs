@@ -5,14 +5,9 @@ using UnityEngine;
 namespace DogfightThreatAI.Gameplay.World
 {
     /// <summary>
-    /// 【调试可视化】把"隐形的逻辑网格"用 Gizmos 画出来。
-    ///
-    /// 这是理解与调试 AI 的唯一实用手段：
-    ///   · 平时游戏里什么都看不到（玩家不该看到格子）
-    ///   · 在 Scene 视图里选中这个物体，就能看到覆盖整张地图的格子线
-    ///   · 以后 ThreatGrid 接上来，这里会变成"威胁热力图"（每格按威胁值染色）——答辩的招牌画面
-    ///
-    /// ⚠️ Gizmos 只在编辑器/开发版里绘制，正式发布包里没有开销。
+    /// 使用 Gizmos 绘制逻辑网格，用于在 Scene 视图中检查网格范围与对齐。
+    /// 该组件仅负责可视化，不参与逻辑计算。
+    /// 威胁热力图接入后，可在此基础上按格子显示威胁值。
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class GridDebugView : MonoBehaviour

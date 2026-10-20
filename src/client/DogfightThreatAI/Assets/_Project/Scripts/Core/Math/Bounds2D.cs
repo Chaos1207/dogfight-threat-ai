@@ -3,13 +3,9 @@ using System;
 namespace DogfightThreatAI.Core.Math
 {
     /// <summary>
-    /// 二维矩形边界（战场范围）。
-    ///
-    /// 为什么放在 Core 而不是靠 Unity 的 Collider：
-    ///   · 边界判定属于【模拟层】——服务器也必须算，否则客户端一改就能飞出战场
-    ///   · 纯数据、无 Unity 依赖，能进 EditMode 测试、能进网络快照
-    ///
-    /// 以后要做"越界扣血 / 撞墙反弹 / 强制返航"，都改这里，不用碰 Unity 物理。
+    /// 二维矩形边界，表示战场范围。
+    /// 边界判定属于模拟层，客户端与服务器使用同一份数据。
+    /// 该类型不依赖 Unity，可用于 EditMode 测试与网络快照。
     /// </summary>
     [Serializable]
     public struct Bounds2D

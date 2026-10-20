@@ -1,7 +1,7 @@
 using System;
 using DogfightThreatAI.Core.Input;
 using DogfightThreatAI.Core.Math;
-using DogfightThreatAI.Gameplay.Flight;
+using DogfightThreatAI.Core.Flight;
 using NUnit.Framework;
 
 namespace DogfightThreatAI.Tests.EditMode

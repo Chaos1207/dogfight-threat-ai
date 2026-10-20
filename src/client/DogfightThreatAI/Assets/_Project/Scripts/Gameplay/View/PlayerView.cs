@@ -1,19 +1,14 @@
 using DogfightThreatAI.Core.Math;
-using DogfightThreatAI.Gameplay.Flight;
+using DogfightThreatAI.Core.Flight;
 using UnityEngine;
 
 namespace DogfightThreatAI.Gameplay
 {
     /// <summary>
-    /// 【表现层 / View】只干两件事：把机头画出来、把机身在两个模拟帧之间插值平滑。
-    ///
-    /// ★ 它不认识 FlightModel，也不算任何飞行数学。
-    ///   它拿到的是一份"已经算好的状态"，只负责显示。
-    ///   —— 这就是 Simulate / View 分离。以后做观战、做回放，都是换一个状态来源喂给它。
-    ///
-    /// ⚠️ 关于美术：这个类**不引用任何具体图片**。图从哪来？
-    ///   由 PlayerController 把 AircraftData.BodySprite 传进 Render() 的第四个参数。
-    ///   所以换美术、做选角色界面，都不用改这个文件。
+    /// 飞机的表现组件。
+    /// 负责位置插值、机头旋转和精灵切换，不参与飞行计算。
+    /// 该组件需要挂载在飞机的 Art 子物体上，避免与 Rigidbody2D 争夺 Transform。
+    /// 具体精灵由 PlayerController 从 AircraftData.BodySprite 传入。
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class PlayerView : MonoBehaviour
@@ -43,8 +38,8 @@ namespace DogfightThreatAI.Gameplay
         {
             // 1) 位置插值：固定 50Hz 模拟 → 平滑到显示帧率
             Vec2 position = previous.Position + (current.Position - previous.Position) * alpha;
-            // ⚠️ 必须显式构造 Vector3：C# 不允许"用户自定义转换 + 再一层转换"自动叠加，
-            //    Vec2→Vector2 是我们写的隐式转换，Vector2→Vector3 是 Unity 写的，两者不能串联。
+            // 显式构造 Vector3。Core 不依赖 UnityEngine，
+            // Vec2 的转换位于 Gameplay/Adapters。
             transform.position = new Vector3(position.X, position.Y, transform.position.z);
 
             // 2) 朝向：直接给"机头"，不是给"速度方向"

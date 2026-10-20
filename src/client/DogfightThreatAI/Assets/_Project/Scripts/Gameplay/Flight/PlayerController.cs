@@ -1,32 +1,27 @@
-using DogfightThreatAI.Core.Config;
+using DogfightThreatAI.Core.Flight;
 using DogfightThreatAI.Core.Input;
 using DogfightThreatAI.Core.Math;
-using DogfightThreatAI.Gameplay.Flight;
+using DogfightThreatAI.Gameplay.Adapters;
+using DogfightThreatAI.Gameplay.Config;
 using UnityEngine;
 
 namespace DogfightThreatAI.Gameplay
 {
     /// <summary>
-    /// 【胶水层】把三样东西接起来：
-    ///     输入源（Keyboard / AI / 网络） ──► FlightModel（纯 C# 模拟） ──► Rigidbody2D（落地）
-    ///     以及把当前状态交给 PlayerView 去画。
-    ///
-    /// 它自己**不含任何飞行数学**，也**不含任何绘制代码**。
-    /// 胶水越薄越好——它一变胖，就说明有逻辑跑错地方了。
-    ///
-    /// 单机阶段：本地读输入 → 本地模拟 → 写位置。
-    /// 联机阶段：这里会变成"只上报输入"，模拟搬到 LogicServer，位置来自服务器快照。
-    ///           到时候改的是 FixedUpdate 里的两行，FlightModel 一行都不用动。
+    /// 玩家飞机的胶水组件。
+    /// 负责读取输入、调用 FlightModel、更新 Rigidbody2D，并将当前状态交给 PlayerView。
+    /// 该组件不包含飞行数学，也不包含绘制逻辑。
+    /// 单机阶段在本地完成模拟；联机阶段改为上报输入并读取服务器快照。
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class PlayerController : MonoBehaviour
     {
-        [Header("数据（先设计数据，再搭系统）")]
-        [Tooltip("这架飞机的档案：手感数值 + 美术引用。换飞机 = 换这个 asset")]
+        [Header("数据")]
+        [Tooltip("飞机配置资产，包含手感数值与美术引用。")]
         [SerializeField] AircraftData ship;
 
         [Header("接线")]
-        [Tooltip("输入源。单机阶段挂 KeyboardInputSource；以后可换成 AI 或网络输入源")]
+        [Tooltip("输入源。当前为 KeyboardInputSource，后续可替换为 AI 或网络输入源。")]
         [SerializeField] MonoBehaviour inputSource;
         [SerializeField] Rigidbody2D body;
         [SerializeField] PlayerView view;
@@ -72,7 +67,7 @@ namespace DogfightThreatAI.Gameplay
             if (arenaHalfSize.x > 0f && arenaHalfSize.y > 0f)
                 arena = Bounds2D.Centered(new Vec2(arenaHalfSize.x, arenaHalfSize.y));
 
-            _model = FlightModel.From(ship, arena);
+            _model = FlightModel.From(AircraftSpecAdapter.ToSpec(ship), arena);
 
             // 初始机头朝向 = 美术上机头的朝向。
             // Kenney 的舰船图朝上（偏移 90°），所以初始就朝 +Y 飞，视觉和物理一致；
@@ -93,7 +88,7 @@ namespace DogfightThreatAI.Gameplay
             _hasPrevious = true;
 
             // 位置以物理引擎为落地方式（Kinematic 刚体不会自作主张改位置）
-            body.MovePosition(_state.Position);
+            body.MovePosition(_state.Position.ToUnity());
         }
 
         void Update()

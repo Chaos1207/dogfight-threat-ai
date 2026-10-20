@@ -3,14 +3,9 @@ using UnityEngine;
 namespace DogfightThreatAI.Gameplay.View
 {
     /// <summary>
-    /// 【表现层】相机跟随 + 前瞻 + 世界边界夹紧（大地图标准做法）。
-    ///
-    ///   · 跟随目标，但**不做硬绑定**：平滑时间 0.1~0.2 秒
-    ///   · **前瞻偏移**：朝移动方向提前看一点，避免目标永远死在屏幕中心
-    ///   · **夹紧到世界边界**：按"相机半视口"来夹，保证永远不会拍到地图外的空白
-    ///
-    /// ⚠️ 不要把 Camera 设为目标的子物体 —— 父子跟随会让镜头跟着目标旋转，晕。
-    /// ⚠️ 跟随必须在 LateUpdate —— 用 Update 会和目标移动抢时序，产生抖动。
+    /// 相机跟随组件，提供平滑跟随、前瞻偏移和世界边界夹紧。
+    /// 跟随使用 SmoothDamp，目标不设置为相机的父物体，避免相机随目标旋转。
+    /// 跟随逻辑在 LateUpdate 中执行，避免与目标移动产生时序冲突。
     /// </summary>
     [RequireComponent(typeof(Camera))]
     public sealed class CameraFollow : MonoBehaviour

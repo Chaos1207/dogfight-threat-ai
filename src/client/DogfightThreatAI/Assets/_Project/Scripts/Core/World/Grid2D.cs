@@ -4,18 +4,10 @@ using DogfightThreatAI.Core.Math;
 namespace DogfightThreatAI.Core.World
 {
     /// <summary>
-    /// 【数据层 / 纯 C#】二维逻辑网格。
-    ///
-    /// 这是威胁评估与 A* 寻路的公共底座：
-    ///   · 世界坐标（连续 float）  ↔  格子坐标（离散 int）
-    ///   · 格子索引（行优先）      ↔  (x, y)
-    ///   · 4 / 8 邻居查询
-    ///
-    /// ★ 它**不渲染任何东西**。玩家永远看不到格子。
-    ///   想"看见"格子请用 GridDebugView（Gizmos），两者是分开的。
-    ///
-    /// ★ 它不引用 UnityEngine —— 和 FlightModel 一样，服务器也要用同一份网格判定，
-    ///   否则客户端一改坐标就能让 AI 算错威胁。
+    /// 二维逻辑网格，用于威胁评估与 A* 寻路。
+    /// 提供世界坐标与格子坐标互转、行优先索引以及 4/8 邻居查询。
+    /// 该类型仅表示逻辑数据，不负责渲染；格子线由 GridDebugView 绘制。
+    /// 该类型不引用 UnityEngine，客户端与逻辑服务器使用同一份实现。
     /// </summary>
     [Serializable]
     public readonly struct Grid2D

@@ -3,29 +3,21 @@ using DogfightThreatAI.Core.Config;
 using DogfightThreatAI.Core.Input;
 using DogfightThreatAI.Core.Math;
 
-namespace DogfightThreatAI.Gameplay.Flight
+namespace DogfightThreatAI.Core.Flight
 {
     /// <summary>
-    /// 【模拟层 / Simulate】飞机的运动学积分器。整个项目最核心的一个类。
+    /// 飞机的运动学积分器。
     ///
-    /// ★ 三条纪律（破一条，11 月就要返工）：
-    ///   1. 不继承 MonoBehaviour —— 它不是组件，是纯逻辑
-    ///   2. 不引用 UnityEngine —— 连 Vector2 都不用（用 Core.Math.Vec2）
-    ///   3. 不碰 transform / Input / Time / Sprite —— 那些是"外面的事"
+    /// 该类型不继承 MonoBehaviour，不引用 UnityEngine，
+    /// 也不访问 transform、Input、Time 或 Sprite。
+    /// 因此可以在 EditMode 测试、AI 推演和逻辑服务器中直接使用。
     ///
-    /// 满足这三条之后，这个类可以：
-    ///   ✅ 原样复制进 LogicServer（纯 .NET 进程）跑服务器权威模拟
-    ///   ✅ 被 AI 连续调用 60 次做"推演"（威胁规避路径规划需要）
-    ///   ✅ 在 EditMode 测试里一秒跑一万次，做批量胜率统计
-    ///
-    /// ── 运动模型（漂移版）────────────────────────────────
-    /// 每步把速度分解成两个轴：
-    ///     前进分量（沿机头）  → 由油门控制，加速/减速有惯性
-    ///     横向分量（垂直机头） → 被「横向抓地力 lateralGrip」指数衰减
-    ///
-    /// 机头一转，原来的速度在新坐标系里就多出横向分量 → 这就是甩尾的来源。
-    /// grip 大 → 横向速度很快被吃掉 → 贴地、像钉在轨道上
-    /// grip 小 → 横向速度保留久 → 甩得厉害（赛车漂移）
+    /// 运动模型：
+    /// 每个固定步将速度分解为沿机头方向和垂直机头方向两个分量。
+    /// 前进分量由油门控制，具有加减速惯性；
+    /// 横向分量按 lateralGrip 指数衰减。
+    /// 机头转向后，原速度在新坐标系中产生横向分量，形成甩尾。
+    /// lateralGrip 越大，横向速度衰减越快；越小，甩尾越明显。
     /// </summary>
     public sealed class FlightModel
     {
@@ -63,11 +55,11 @@ namespace DogfightThreatAI.Gameplay.Flight
             _arena        = arena.GetValueOrDefault();
         }
 
-        /// <summary>从 ScriptableObject 构造。模拟层本身不认 Unity 类型。</summary>
-        public static FlightModel From(AircraftData data, Bounds2D? arena = null)
-            => new FlightModel(data.MinSpeed, data.MaxSpeed, data.Acceleration,
-                               data.TurnRateDegPerSec, data.Drag,
-                               data.LateralGrip, data.DriftScrub, arena);
+        /// <summary>使用纯配置数据构造飞行模型。</summary>
+        public static FlightModel From(in AircraftSpec spec, Bounds2D? arena = null)
+            => new FlightModel(spec.MinSpeed, spec.MaxSpeed, spec.Acceleration,
+                               spec.TurnRateDegPerSec, spec.Drag,
+                               spec.LateralGrip, spec.DriftScrub, arena);
 
         /// <summary>
         /// 推进一个固定时间步。调用方必须传【固定】dt（如 Time.fixedDeltaTime），

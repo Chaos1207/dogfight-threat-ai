@@ -1,16 +1,12 @@
 using System;
 using DogfightThreatAI.Core.Math;
 
-namespace DogfightThreatAI.Gameplay.Flight
+namespace DogfightThreatAI.Core.Flight
 {
     /// <summary>
-    /// 【数据层】飞机某一时刻的完整状态。纯数据、可复制、可序列化、可回滚。
-    ///
-    /// 它是"状态"，不是"配置"：
-    ///   - 配置（最大速度）→ AircraftData（ScriptableObject，只读）
-    ///   - 状态（当前速度）→ 这里（每帧变，会进网络快照）
-    ///
-    /// 联机阶段这个结构体会被写进快照发给客户端，所以它必须简单、可复制、零引用。
+    /// 飞机在某一时刻的完整状态。
+    /// 该结构仅包含运行状态，可复制、可序列化，用于模拟与网络快照。
+    /// 配置数据存放在 AircraftData 和 AircraftSpec 中。
     /// </summary>
     [Serializable]
     public struct FlightState

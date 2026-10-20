@@ -4,11 +4,7 @@ using UnityEngine;
 namespace DogfightThreatAI.Gameplay.InputSource
 {
     /// <summary>
-    /// 【实现 1/3】键盘输入源。
-    /// 只做一件事：把按键翻译成 FlightInput。里面没有任何飞行逻辑。
-    ///
-    /// 以后加 AI 时，写一个 AiInputSource 实现同一个接口即可，
-    /// PlayerController 一行都不用改。
+    /// 键盘输入源。将按键状态转换为 FlightInput，不包含飞行逻辑。
     /// </summary>
     public sealed class KeyboardInputSource : MonoBehaviour, IPlayerInputSource
     {

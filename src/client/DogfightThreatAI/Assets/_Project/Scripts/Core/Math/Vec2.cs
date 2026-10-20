@@ -3,9 +3,8 @@ using System;
 namespace DogfightThreatAI.Core.Math
 {
     /// <summary>
-    /// 二维向量。刻意不使用 UnityEngine.Vector2：
-    /// 这样 FlightModel / 威胁网格 / A* 等"模拟层"代码可以完全不依赖 Unity 引擎，
-    /// 以后原样复制进 LogicServer（纯 .NET）即可，不需要改任何一行。
+    /// 二维向量。该类型不依赖 UnityEngine，
+    /// 可在 Core、AI 与逻辑服务器中使用。
     /// </summary>
     [Serializable]
     public struct Vec2 : IEquatable<Vec2>
@@ -68,10 +67,6 @@ namespace DogfightThreatAI.Core.Math
         public static Vec2 operator *(Vec2 a, float s) => new Vec2(a.X * s, a.Y * s);
         public static Vec2 operator *(float s, Vec2 a) => new Vec2(a.X * s, a.Y * s);
         public static Vec2 operator /(Vec2 a, float s) => new Vec2(a.X / s, a.Y / s);
-
-        // 和 UnityEngine 的互转：控制层/渲染层不用手写转换代码
-        public static implicit operator Vec2(UnityEngine.Vector2 v)  => new Vec2(v.x, v.y);
-        public static implicit operator UnityEngine.Vector2(Vec2 v)  => new UnityEngine.Vector2(v.X, v.Y);
 
         public bool Equals(Vec2 other) => X.Equals(other.X) && Y.Equals(other.Y);
         public override bool Equals(object obj) => obj is Vec2 v && Equals(v);
