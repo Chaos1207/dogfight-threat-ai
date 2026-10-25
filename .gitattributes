@@ -83,6 +83,8 @@
 *.aar   binary
 *.jar   binary
 *.unitypackage binary
+# 地图布局按字节存储地形索引，禁止按文本换行转换或合并。
+*.bytes binary
 
 # ---------- 6. 办公文档：二进制，**无法 merge**（见 CONTRIBUTING.md）----------
 *.docx  binary

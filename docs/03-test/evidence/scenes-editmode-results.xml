@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<test-run id="2" testcasecount="18" result="Passed" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.1270212">
+  <test-suite type="TestSuite" id="1027" name="dogfight-threat-ai" fullname="dogfight-threat-ai" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.127021" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties />
+    <test-suite type="Assembly" id="1049" name="DogfightThreatAI.Tests.EditMode.dll" fullname="DogfightThreatAI.Tests.EditMode.dll" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.116939" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="platform" value="EditMode" />
+      </properties>
+      <test-suite type="TestSuite" id="1050" name="DogfightThreatAI" fullname="DogfightThreatAI" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.116731" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1051" name="Tests" fullname="DogfightThreatAI.Tests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.113495" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1052" name="EditMode" fullname="DogfightThreatAI.Tests.EditMode" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.109957" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1028" name="BattleMapTests" fullname="DogfightThreatAI.Tests.EditMode.BattleMapTests" classname="DogfightThreatAI.Tests.EditMode.BattleMapTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.095699" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1030" name="MapStreaming_CoversCameraAtSpawnChunkCrossingsAndWorldCorners" fullname="DogfightThreatAI.Tests.EditMode.BattleMapTests.MapStreaming_CoversCameraAtSpawnChunkCrossingsAndWorldCorners" methodname="MapStreaming_CoversCameraAtSpawnChunkCrossingsAndWorldCorners" classname="DogfightThreatAI.Tests.EditMode.BattleMapTests" runstate="Runnable" seed="443248959" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.066352" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1029" name="RiverValley_AllCellsHaveValidSprites_AndMatchExistingArena" fullname="DogfightThreatAI.Tests.EditMode.BattleMapTests.RiverValley_AllCellsHaveValidSprites_AndMatchExistingArena" methodname="RiverValley_AllCellsHaveValidSprites_AndMatchExistingArena" classname="DogfightThreatAI.Tests.EditMode.BattleMapTests" runstate="Runnable" seed="1463105418" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.019750" asserts="0">
+                <properties />
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1031" name="FlightModelTests" fullname="DogfightThreatAI.Tests.EditMode.FlightModelTests" classname="DogfightThreatAI.Tests.EditMode.FlightModelTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.006773" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1033" name="单步加速度受限制_所以有惯性" fullname="DogfightThreatAI.Tests.EditMode.FlightModelTests.单步加速度受限制_所以有惯性" methodname="单步加速度受限制_所以有惯性" classname="DogfightThreatAI.Tests.EditMode.FlightModelTests" runstate="Runnable" seed="448470227" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.001924" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1036" name="无输入_不会自己往前冲" fullname="DogfightThreatAI.Tests.EditMode.FlightModelTests.无输入_不会自己往前冲" methodname="无输入_不会自己往前冲" classname="DogfightThreatAI.Tests.EditMode.FlightModelTests" runstate="Runnable" seed="1541928672" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000796" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1037" name="松开油门_保持惯性滑行" fullname="DogfightThreatAI.Tests.EditMode.FlightModelTests.松开油门_保持惯性滑行" methodname="松开油门_保持惯性滑行" classname="DogfightThreatAI.Tests.EditMode.FlightModelTests" runstate="Runnable" seed="2053957357" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000261" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1032" name="油门拉满_速度不会超过上限" fullname="DogfightThreatAI.Tests.EditMode.FlightModelTests.油门拉满_速度不会超过上限" methodname="油门拉满_速度不会超过上限" classname="DogfightThreatAI.Tests.EditMode.FlightModelTests" runstate="Runnable" seed="741941592" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000366" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1034" name="油门调低_速度会下降" fullname="DogfightThreatAI.Tests.EditMode.FlightModelTests.油门调低_速度会下降" methodname="油门调低_速度会下降" classname="DogfightThreatAI.Tests.EditMode.FlightModelTests" runstate="Runnable" seed="308332284" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000385" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1039" name="漂移会掉速" fullname="DogfightThreatAI.Tests.EditMode.FlightModelTests.漂移会掉速" methodname="漂移会掉速" classname="DogfightThreatAI.Tests.EditMode.FlightModelTests" runstate="Runnable" seed="1637595546" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000284" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1035" name="相同输入_结果完全一致" fullname="DogfightThreatAI.Tests.EditMode.FlightModelTests.相同输入_结果完全一致" methodname="相同输入_结果完全一致" classname="DogfightThreatAI.Tests.EditMode.FlightModelTests" runstate="Runnable" seed="1775491259" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000299" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1038" name="转向时出现漂移_松开后自动收敛" fullname="DogfightThreatAI.Tests.EditMode.FlightModelTests.转向时出现漂移_松开后自动收敛" methodname="转向时出现漂移_松开后自动收敛" classname="DogfightThreatAI.Tests.EditMode.FlightModelTests" runstate="Runnable" seed="840063925" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000417" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1040" name="飞出战场会被挡住" fullname="DogfightThreatAI.Tests.EditMode.FlightModelTests.飞出战场会被挡住" methodname="飞出战场会被挡住" classname="DogfightThreatAI.Tests.EditMode.FlightModelTests" runstate="Runnable" seed="62441721" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000750" asserts="0">
+                <properties />
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1041" name="Grid2DTests" fullname="DogfightThreatAI.Tests.EditMode.Grid2DTests" classname="DogfightThreatAI.Tests.EditMode.Grid2DTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.003498" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1043" name="世界坐标转格子_边界与中心都要对" fullname="DogfightThreatAI.Tests.EditMode.Grid2DTests.世界坐标转格子_边界与中心都要对" methodname="世界坐标转格子_边界与中心都要对" classname="DogfightThreatAI.Tests.EditMode.Grid2DTests" runstate="Runnable" seed="1985012330" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.001003" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1046" name="夹紧转换_越界也不会崩" fullname="DogfightThreatAI.Tests.EditMode.Grid2DTests.夹紧转换_越界也不会崩" methodname="夹紧转换_越界也不会崩" classname="DogfightThreatAI.Tests.EditMode.Grid2DTests" runstate="Runnable" seed="636461972" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000293" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1042" name="尺寸换算_400x300除以4_应该是100x75" fullname="DogfightThreatAI.Tests.EditMode.Grid2DTests.尺寸换算_400x300除以4_应该是100x75" methodname="尺寸换算_400x300除以4_应该是100x75" classname="DogfightThreatAI.Tests.EditMode.Grid2DTests" runstate="Runnable" seed="1114643660" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000171" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1047" name="索引往返一致_行优先" fullname="DogfightThreatAI.Tests.EditMode.Grid2DTests.索引往返一致_行优先" methodname="索引往返一致_行优先" classname="DogfightThreatAI.Tests.EditMode.Grid2DTests" runstate="Runnable" seed="2136361600" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000203" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1044" name="负坐标不能被强转截断" fullname="DogfightThreatAI.Tests.EditMode.Grid2DTests.负坐标不能被强转截断" methodname="负坐标不能被强转截断" classname="DogfightThreatAI.Tests.EditMode.Grid2DTests" runstate="Runnable" seed="962111463" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000169" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1045" name="越界返回false_并给出负一" fullname="DogfightThreatAI.Tests.EditMode.Grid2DTests.越界返回false_并给出负一" methodname="越界返回false_并给出负一" classname="DogfightThreatAI.Tests.EditMode.Grid2DTests" runstate="Runnable" seed="2131750916" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000339" asserts="0">
+                <properties />
+              </test-case>
+              <test-case id="1048" name="邻居查询_边界外不算" fullname="DogfightThreatAI.Tests.EditMode.Grid2DTests.邻居查询_边界外不算" methodname="邻居查询_边界外不算" classname="DogfightThreatAI.Tests.EditMode.Grid2DTests" runstate="Runnable" seed="1696127769" result="Passed" start-time="2026-10-25 03:50:22Z" end-time="2026-10-25 03:50:22Z" duration="0.000258" asserts="0">
+                <properties />
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

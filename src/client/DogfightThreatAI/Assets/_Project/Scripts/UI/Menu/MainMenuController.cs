@@ -1,4 +1,5 @@
 using System.Collections;
+using DogfightThreatAI.UI.Navigation;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 namespace DogfightThreatAI.UI.Menu
 {
     /// <summary>
-    /// Scene-local title/menu flow. Builds only in Menu; Battle remains owned by its gameplay scripts.
+    /// Scene-local title/menu flow. Builds only in StartMenu; GameScene keeps its own gameplay scripts.
     /// All transitions use unscaled time and gate input until the transition finishes.
     /// </summary>
     [RequireComponent(typeof(RectTransform))]
@@ -16,7 +17,6 @@ namespace DogfightThreatAI.UI.Menu
         public enum MenuPhase { AwaitInput, Revealing, Menu, Panel, Loading }
         public MenuPhase Phase { get; private set; }
 
-        const string BattlePath = "Assets/_Project/Scenes/Battle/Battle.unity";
         MenuUi _ui;
         [Header("Scene UI")]
         [SerializeField] CanvasGroup _prompt;
@@ -47,7 +47,7 @@ namespace DogfightThreatAI.UI.Menu
 
         static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name != "Menu" || FindObjectOfType<MainMenuController>() != null) return;
+            if (scene.name != SceneNavigation.StartMenuScene || FindObjectOfType<MainMenuController>() != null) return;
             var root = new GameObject("Main Menu", typeof(RectTransform));
             SceneManager.MoveGameObjectToScene(root, scene);
             root.AddComponent<MainMenuController>();
@@ -67,7 +67,7 @@ namespace DogfightThreatAI.UI.Menu
 
         void BindSceneView()
         {
-            Wire(_start, StartBattle, "驾驶战机，进入当前的 Battle 飞行场景。");
+            Wire(_start, StartBattle, "驾驶战机，进入当前的 GameScene 飞行场景。");
             Wire(_settings, OpenSettings, "调整声音、显示与界面动态效果。");
             Wire(_controls, OpenControls, "查看飞行操控与菜单快捷键。");
             Wire(_credits, OpenCredits, "关于这个项目与所使用的素材。");
@@ -91,7 +91,7 @@ namespace DogfightThreatAI.UI.Menu
         }
 
 #if UNITY_EDITOR
-        /// <summary>Author the same native uGUI hierarchy into Menu.unity, before entering Play mode.</summary>
+        /// <summary>Author the same native uGUI hierarchy into StartMenu.unity, before entering Play mode.</summary>
         public void BuildEditorLayout()
         {
             if (Application.isPlaying) return;
@@ -110,7 +110,7 @@ namespace DogfightThreatAI.UI.Menu
             _menu.interactable = _menu.blocksRaycasts = false;
             _blackout.alpha = 0;
             _blackout.blocksRaycasts = false;
-            _description.text = "驾驶战机，进入当前的 Battle 飞行场景。";
+            _description.text = "驾驶战机，进入当前的 GameScene 飞行场景。";
             Canvas.ForceUpdateCanvases();
         }
 #endif
@@ -177,7 +177,7 @@ namespace DogfightThreatAI.UI.Menu
             _ui.Text("Subtitle", _content, "THREAT AI", 96, 32, 229, 570, 150, display: true);
             _ui.Text("Tagline", _content, "实时威胁评估 · 动态决策", 20, 36, 374, 550, 36, MenuUi.Muted);
 
-            _start = Item("StartGame", "开始游戏", 478, StartBattle, "驾驶战机，进入当前的 Battle 飞行场景。");
+            _start = Item("StartGame", "开始游戏", 478, StartBattle, "驾驶战机，进入当前的 GameScene 飞行场景。");
             _settings = Item("Settings", "设置", 544, OpenSettings, "调整声音、显示与界面动态效果。");
             _controls = Item("Controls", "操作说明", 610, OpenControls, "查看飞行操控与菜单快捷键。");
             _credits = Item("Credits", "制作名单", 676, OpenCredits, "关于这个项目与所使用的素材。");
@@ -441,9 +441,9 @@ namespace DogfightThreatAI.UI.Menu
         public void StartBattle()
         {
             if (Phase != MenuPhase.Menu) return;
-            if (!Application.CanStreamedLevelBeLoaded(BattlePath))
+            if (!SceneNavigation.CanLoadGameScene)
             {
-                var rect = OpenPanel("暂时无法开始", "请在 Build Settings 中启用 Battle 场景后重试。", _start);
+                var rect = OpenPanel("暂时无法开始", "请在 Build Settings 中启用 GameScene 场景后重试。", _start);
                 if (rect != null)
                 {
                     var back = _ui.Button("Back", rect, "返回", 23, 798, 690, 254, 60, ClosePanel);
@@ -461,7 +461,8 @@ namespace DogfightThreatAI.UI.Menu
         IEnumerator LoadBattle()
         {
             yield return Fade(_blackout, 1, .45f);
-            yield return SceneManager.LoadSceneAsync(BattlePath, LoadSceneMode.Single);
+            // 先完成现有淡黑动画，再由独立导航脚本加载地图场景。
+            yield return SceneNavigation.LoadGameSceneAsync();
         }
 
     }

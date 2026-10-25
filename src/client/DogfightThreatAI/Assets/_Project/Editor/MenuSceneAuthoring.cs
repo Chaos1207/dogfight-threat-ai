@@ -9,7 +9,7 @@ namespace DogfightThreatAI.Editor
     /// <summary>Uses Unity's own serializer to save the native Canvas and its references.</summary>
     public static class MenuSceneAuthoring
     {
-        const string MenuPath = "Assets/_Project/Scenes/Menu/Menu.unity";
+        const string MenuPath = "Assets/_Project/Scenes/StartMenu/StartMenu.unity";
 
         [MenuItem("Tools/Dogfight Threat AI/打开并构建开始界面")]
         public static void BuildMenuScene()
