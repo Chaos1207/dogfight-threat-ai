@@ -1,0 +1,8 @@
+PASS: Battle scene loads river valley map asset
+PASS: Player flight controller active
+PASS: Development starfield replaced
+PASS: Actual FlightModel moves player more than 45 units across chunk boundaries
+PASS: Camera follows interpolated aircraft
+PASS: Streaming covers all four world corners with no missing tiles
+PASS: 4:3 and 21:9 camera coverage verified
+PASS: Background terrain does not block flight
