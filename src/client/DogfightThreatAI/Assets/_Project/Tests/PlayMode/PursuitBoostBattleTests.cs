@@ -7,6 +7,7 @@ using DogfightThreatAI.Core.Math;
 using DogfightThreatAI.Gameplay;
 using DogfightThreatAI.Gameplay.Combat;
 using DogfightThreatAI.Gameplay.InputSource;
+using DogfightThreatAI.UI.Navigation;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,7 +27,7 @@ namespace DogfightThreatAI.Tests.PlayMode
         {
             _scale = Time.timeScale;
             Time.timeScale = 0f;
-            yield return SceneManager.LoadSceneAsync("Battle", LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneNavigation.GameScene, LoadSceneMode.Single);
             _combat = Object.FindObjectOfType<BattleCombatController>();
             _ai = _combat.Enemy.GetComponent<ChaseAiInputSource>();
             Camera.main.transform.position = new Vector3(0, 0, -10);

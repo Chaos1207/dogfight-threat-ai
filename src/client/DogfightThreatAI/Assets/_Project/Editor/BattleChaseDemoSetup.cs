@@ -4,6 +4,7 @@ using DogfightThreatAI.Gameplay.Combat;
 using DogfightThreatAI.Gameplay.Config;
 using DogfightThreatAI.Gameplay.InputSource;
 using DogfightThreatAI.Gameplay.View;
+using DogfightThreatAI.UI.Navigation;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace DogfightThreatAI.Editor
     /// <summary>用 Unity 序列化 API 维护演示 prefab 和场景引用，避免手写场景 YAML。</summary>
     public static class BattleChaseDemoSetup
     {
-        const string ScenePath = "Assets/_Project/Scenes/Battle/Battle.unity";
+        const string ScenePath = SceneNavigation.GameScenePath;
         const string PlayerPrefabPath = "Assets/_Project/Prefabs/Aircraft/Player_Ship01.prefab";
         const string EnemyPrefabPath = "Assets/_Project/Prefabs/Aircraft/Enemy_Chaser01.prefab";
         const string EnemyAircraftPath = "Assets/_Project/Settings/Aircraft/Enemy_Attacker.asset";
@@ -238,6 +239,7 @@ namespace DogfightThreatAI.Editor
                     gameView.maximized = true;
                     gameView.Focus();
                 }
+                GameEntrySetup.ConfigureGamePreview();
                 EditorApplication.isPlaying = true;
             };
         }

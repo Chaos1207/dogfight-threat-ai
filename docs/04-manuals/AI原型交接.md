@@ -1,8 +1,8 @@
 # AI原型交接
 
-更新日期：2026-10-24。分支来源为`Chaos1207/dogfight-threat-ai:feat/chase-ai-prototype`，评审目标为`ycccuc/dogfight-threat-ai:main`。当前交付为Unity Battle中的单敌机空战原型；完整玩法见[Battle手册](Battle追击演示.md)，算法与资源规则见[AI原型说明](../02-design/AI原型说明.md)。
+更新日期：2026-10-25。分支来源为`Chaos1207/dogfight-threat-ai:feat/chase-ai-prototype`，评审目标为`ycccuc/dogfight-threat-ai:main`。当前交付为 Unity GameScene 中的单敌机空战原型；Battle 沿用为玩法名称，实际场景路径为 `Assets/_Project/Scenes/GameScene/GameScene.unity`。完整玩法见[Battle手册](Battle追击演示.md)，算法与资源规则见[AI原型说明](../02-design/AI原型说明.md)。
 
-当前账号没有上游仓库的直接推送权限，采用标准Fork流程：将同名功能分支推送到Fork，再向上游main创建PR。本次只提交供评审，main的合并由项目负责人决定。
+当前账号没有上游仓库的直接推送权限，采用标准 Fork 流程：将同名功能分支推送到 Fork，更新现有[上游 PR #1](https://github.com/ycccuc/dogfight-threat-ai/pull/1)。本轮集成上游 `main` 的开始界面、河谷农田地图和场景改名，继续在同一 PR 评审；main 的合并由项目负责人决定。
 
 ## 当前实现
 
@@ -26,11 +26,15 @@
 ## 启动与复现
 
 1. 使用Unity Hub安装并选择**2022.3.62f3c1**，打开仓库中的`src/client/DogfightThreatAI`。工程版本记录在[ProjectVersion.txt](../../src/client/DogfightThreatAI/ProjectSettings/ProjectVersion.txt)。
-2. 打开`Assets/_Project/Scenes/Battle/Battle.unity`并点Play，或执行`Tools → Dogfight Threat AI → Open Battle and Play`。已有出生点时使用Open菜单即可；Setup菜单会维护场景/prefab，需退出Play后使用。
+2. 打开 `Assets/_Project/Scenes/StartMenu/StartMenu.unity`，或执行 `Tools → Dogfight Threat AI → 打开完整游戏入口`。点击 Play 后按任意键进入菜单，再点“开始游戏”进入 GameScene；右上角“返回主菜单”可回到 StartMenu。常规 Play 由 `GameEntrySetup` 从 StartMenu 启动。
 3. 点击Game窗口，用英文输入法操作：W加速、S刹车、A/D转向、Shift长推、Space短冲、R重开。F1～F4固定对应难度，F5恢复自动；进行中的动作结束后才应用切级，不重置能量或冷却。
 4. 对照HUD的`HIT -1 HULL`、能量/短冲CD、`AIMING`、`LOCKED - DODGE`与`RECOVERING`。金线转橙表示轨道已承诺，可尝试横切或短冲；勿把预警阶段理解为免碰撞。
 
-默认物理固定步为0.02秒。Core批量对照、Unity真实场景和系统键盘输入各自验证不同边界，不能互相替代。当前测试数量与结果以[提交验证摘要](../03-test/evidence/chase-ai-prototype/handoff-validation.md)为准，不从旧开发记录推断此次提交已经通过。
+单独复验 AI 时执行 `Tools → Dogfight Threat AI → Open Battle and Play`，临时直入 `Assets/_Project/Scenes/GameScene/GameScene.unity`，退出 Play 后恢复 StartMenu 入口；仅打开 GameScene 后点击普通 Play 仍先进入菜单。已有出生点时使用 Open 菜单即可；Setup 菜单会维护场景/prefab，需退出 Play 后使用。Build Settings 顺序为 StartMenu（0）、GameScene（1），导航脚本实际加载这两个名称。完整运行、菜单和地图说明见[获取与运行](获取与运行.md)、[场景切换接入](场景切换接入.md)和[河谷农田地图](河谷农田地图.md)。
+
+河谷地图保持 400×300 物理战场，相机世界半尺寸保持 (201.2, 151.2)。为覆盖镜头边缘增加的 2 单位地图外沿只作背景渲染，不改变飞行边界、碰撞体积或接触伤害；调试网格保留但 Play 中隐藏，星点背景移除。
+
+默认物理固定步为0.02秒。Core批量对照、Unity真实场景和系统键盘输入各自验证不同边界，不能互相替代。本轮测试数量与结果以[场景改名与上游集成验证](../03-test/场景改名与上游集成验证.md)为准；[原交接版本验证摘要](../03-test/evidence/chase-ai-prototype/handoff-validation.md)保留为集成前基线，不从旧开发记录推断此次集成已经通过。
 
 ## 跨模块变更与评审范围
 
@@ -43,7 +47,8 @@
 | 真实体积接触 | `AircraftHitbox`读取启用碰撞体世界半径；`BattleCombatController`在两机固定步后调用`ContactCombatModel.StepContact` | 高速扫掠、保护到期、同一战斗模型持续持有HP/时钟，不能由物理回调再扣一次血 |
 | 公开推进线索 | `AircraftSnapshot`增加可见性、推进表现与时间戳，`IVisiblePropulsionCueSource`只公开Hold/Dash/Overheat | 信息经过可见性和观察延迟，不能暴露私有资源或输入 |
 | 只读状态与表现 | `PlayerController.State/PreviousState`提供值快照；`PlayerView`保留未抖动`RenderPosition`供相机跟随 | AI不读Art Transform瞄准，机身抖动不污染碰撞或镜头 |
-| 场景、prefab与HUD | 新敌机、BattleCombat、体积、预警/尾焰与难度/资源HUD共同接入Battle | 序列化引用及.meta完整，场景不保存运行期位置，表现不另做判定 |
+| 场景、prefab与HUD | 敌机、BattleCombat、体积、预警/尾焰与难度/资源HUD共同接入GameScene，保留上游菜单、河谷地图和返回入口 | 序列化引用及.meta完整，场景不保存运行期位置，表现不另做判定 |
+| 场景改名与入口 | Menu / Battle 改为 StartMenu / GameScene，保留原场景.meta GUID；常规Play走菜单，AI工具直入GameScene | 运行时加载名、编辑器工具和测试路径一致，返回后不残留旧对局 |
 
 当前键盘玩家的普通MotionCommand也固定提供9/18/240，未自动继承AircraftData的MaxSpeed/Acceleration/TurnRate；只修改这三项资产字段不能调整当前键盘机型。该原型限制与后续机型配置映射需岗位A一并评审，详见[Player移动说明](../02-design/Player移动说明.md)。
 
@@ -65,7 +70,7 @@
 
 ## 验证与证据携带
 
-交接前的独立静态审查记录为：未发现Critical/Important问题；资源meta缺失、重复GUID、未解析GUID和fileID均为0；该次审查扫描的205个候选提交文件未检出密钥模式或构建缓存。该结果只覆盖当时的静态审查范围，不能替代真实编译、Unity测试或试玩。
+集成前交接版本的独立静态审查记录为：未发现Critical/Important问题；资源meta缺失、重复GUID、未解析GUID和fileID均为0；该次审查扫描的205个候选提交文件未检出密钥模式或构建缓存。该结果只覆盖当时的静态审查范围，不作为本轮静态检查结果，也不能替代真实编译、Unity测试或试玩。
 
 从仓库根目录执行纯Core测试：
 
@@ -73,7 +78,7 @@
 dotnet test tools/DogfightThreatAI.Core.Tests/DogfightThreatAI.Core.Tests.csproj
 ```
 
-Unity测试通过`Window → General → Test Runner`分别运行EditMode与PlayMode。完整命令、提交版本结果和可携带文件清单以[handoff-validation.md](../03-test/evidence/chase-ai-prototype/handoff-validation.md)为准；该摘要是交接验收入口。批量矩阵工具说明见[tools文档](../../tools/README.md)，历史控制台AiDemo仍用旧攻击入口。
+Unity测试通过`Window → General → Test Runner`分别运行EditMode与PlayMode。本轮复跑状态和新证据入口以[场景改名与上游集成验证](../03-test/场景改名与上游集成验证.md)为准；[handoff-validation.md](../03-test/evidence/chase-ai-prototype/handoff-validation.md)记录集成前版本的命令、结果和可携带文件，不充当本轮测试结果。批量矩阵工具说明见[tools文档](../../tools/README.md)，历史控制台AiDemo仍用旧攻击入口。
 
 [全级强化开发记录](../03-test/AI全级强化验证.md)与更早记录保留各阶段口径，其中本机临时目录、日志和截图路径不会随仓库传递。接收方应使用本次随仓库携带的证据与复现方法；一伤版本不能沿用早期多伤候选的生存倍率，脚本键盘成绩也不能写成人工手打。
 
@@ -81,4 +86,5 @@ Unity测试通过`Window → General → Test Runner`分别运行EditMode与Play
 
 ## 变更记录
 
+- 2026-10-25：记录同一 PR 的上游集成范围，更新 StartMenu / GameScene、双向导航与 AI 直入流程，并区分本轮证据与集成前基线。
 - 2026-10-24：整理当前四级一伤原型、共享变更、初稿差异、后台运行设置与可携带提交验证入口。

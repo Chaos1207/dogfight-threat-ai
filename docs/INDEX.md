@@ -29,18 +29,29 @@
 | Battle 四级敌机 AI 与加速惩罚说明 | [02-design/AI原型说明.md](02-design/AI原型说明.md) | 四级决策原理、设计目的与反制、敌机追赶参数、Shift/Space资源与耗尽惩罚、碰撞和技术接线 |
 | AI 成长与反制方案 | [02-design/AI成长与反制方案.md](02-design/AI成长与反制方案.md) | 已批准的四级成长、固定预警、反制手段与设计依据 |
 
+## 运行与验证
+
+- [获取与运行](04-manuals/获取与运行.md)：其他电脑拉取 PR、引擎版本、依赖和运行入口。
+- [开始界面使用说明](04-manuals/开始界面.md)：操作流程、设置项、资源来源及测试方法。
+- [河谷农田地图说明](04-manuals/河谷农田地图.md)：选定地图、场景接入、地图数据与验证方式。
+- [场景切换接入](04-manuals/场景切换接入.md)：StartMenu / GameScene、SceneManager 脚本、返回按钮与 Build Settings。
+- [开始界面验证记录](03-test/开始界面验证.md)：编译结果、交互预览检查及尚未完成的 Unity 验证。
+- [Battle 四级 AI 试玩](04-manuals/Battle追击演示.md)：GameScene 中的四级追击、Shift/Space、碰撞与 AI 直入工具；常规 Play 从 StartMenu 开始。
+- [场景改名与上游集成验证](03-test/场景改名与上游集成验证.md)：本轮 StartMenu / GameScene 适配、菜单/地图与 AI 功能保留检查及复跑证据。
+
 ## 项目过程文档
 
 | 文档 | 路径 | 内容 |
 |---|---|---|
 | 项目分工 | [00-project/分工.md](00-project/分工.md) | 岗位职责、共享契约、协作规则与交付节奏 |
 | AI 原型交接 | [04-manuals/AI原型交接.md](04-manuals/AI原型交接.md) | 当前四级一伤原型、启动与操作、共享接口及与初稿差异、后台运行设置和评审范围 |
-| AI 原型提交验证 | [03-test/evidence/chase-ai-prototype/handoff-validation.md](03-test/evidence/chase-ai-prototype/handoff-validation.md) | 随仓库携带的提交版本验证摘要、复现方法及证据边界 |
+| AI 原型提交验证 | [03-test/evidence/chase-ai-prototype/handoff-validation.md](03-test/evidence/chase-ai-prototype/handoff-validation.md) | 集成前交接版本验证摘要、复现方法及证据边界 |
+| 场景改名与上游集成验证 | [03-test/场景改名与上游集成验证.md](03-test/场景改名与上游集成验证.md) | 本轮菜单、地图、导航与 AI 集成的复跑状态，不沿用旧版本测试计数 |
 | AI 原型验证 | [03-test/AI原型验证.md](03-test/AI原型验证.md) | Unity / .NET 测试结果、复跑命令与当前限制 |
 | AI 成长与反制验证 | [03-test/AI成长与反制验证.md](03-test/AI成长与反制验证.md) | 上一版停车预警的 182 项 Core/EditMode、11 项场景测试与公开预警反制对照 |
 | AI 难度试玩评估 | [03-test/AI难度试玩评估.md](03-test/AI难度试玩评估.md) | 真实键盘绕圈试玩与432组策略对照，记录高级进攻机会不足 |
 | 移动瞄准与成长修复验证 | [03-test/AI移动瞄准与成长修复验证.md](03-test/AI移动瞄准与成长修复验证.md) | 历史四级版本：移动锁向、细长提示与1056组强度对照 |
-| 全级强化验证 | [03-test/AI全级强化验证.md](03-test/AI全级强化验证.md) | 当前 Battle：全级性能与观察强化、1HP接触伤害、保护期内准备预警、压力及近距反制验证 |
+| 全级强化验证 | [03-test/AI全级强化验证.md](03-test/AI全级强化验证.md) | 集成前 Battle：全级性能与观察强化、1HP接触伤害、保护期内准备预警、压力及近距反制验证 |
 | 敌机锁轨与四级压迫验证 | [03-test/AI敌机锁轨与四级压迫验证.md](03-test/AI敌机锁轨与四级压迫验证.md) | 历史锁轨版：固定未来发射轴、完整预警、当时的四级双向绕圈压力与近距反制、系统键盘复核 |
 | 追赶推进与资源惩罚验证 | [03-test/AI追赶推进与资源惩罚验证.md](03-test/AI追赶推进与资源惩罚验证.md) | 历史推进资源版：独立 Shift/Space、有限敌机推进、过热惩罚及当时未达标的四级压力结果 |
 | 四级成长与双模式推进验证 | [03-test/AI四级成长与双模式推进验证.md](03-test/AI四级成长与双模式推进验证.md) | 历史版本：四级观察/截击/侧切/历史适配，同键点按短冲与长按持续加速 |
@@ -72,4 +83,5 @@
 
 ## 变更记录
 
+- 2026-10-25：合并开始界面、河谷地图和双向导航入口；补充现行 GameScene 玩法与本轮集成验证索引。
 - 2026-10-24：增加AI原型交接及可携带提交验证入口。

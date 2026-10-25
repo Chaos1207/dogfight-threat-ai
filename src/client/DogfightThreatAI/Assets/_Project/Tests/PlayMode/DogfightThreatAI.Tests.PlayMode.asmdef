@@ -4,6 +4,8 @@
     "references": [
         "DogfightThreatAI.Core",
         "DogfightThreatAI.Gameplay",
+        "DogfightThreatAI.UI",
+        "UnityEngine.UI",
         "UnityEngine.TestRunner"
     ],
     "includePlatforms": [],

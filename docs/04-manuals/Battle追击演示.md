@@ -1,6 +1,8 @@
 # Battle 四级 AI 与推进资源试玩
 
-打开 `Assets/_Project/Scenes/Battle/Battle.unity` 后点击 Play，或使用菜单 `Tools → Dogfight Threat AI → Open Battle and Play`。
+Battle 是本文沿用的四级 AI 追击玩法名称，实际场景为 `Assets/_Project/Scenes/GameScene/GameScene.unity`。完整游戏从 `Assets/_Project/Scenes/StartMenu/StartMenu.unity` 开始：点击 Play，按任意键显示菜单，再点“开始游戏”进入 GameScene；右上角“返回主菜单”可返回 StartMenu。常规 Play 由 `GameEntrySetup` 统一从 StartMenu 启动，导航与地图说明见[场景切换接入](场景切换接入.md)和[河谷农田地图](河谷农田地图.md)。
+
+单独复验 AI 时，使用菜单 `Tools → Dogfight Threat AI → Open Battle and Play` 临时直入 GameScene，退出 Play 后恢复 StartMenu 入口；仅打开 GameScene 后点击普通 Play 仍会先进入菜单。
 
 每级决策原理、设计目的、反制方式与加速惩罚统一见 [Battle 四级敌机 AI 与加速惩罚说明](../02-design/AI原型说明.md)。本手册侧重操作和画面提示。
 
@@ -63,7 +65,7 @@
 - 高速碰撞使用连续路径扫掠，不要求某一渲染帧恰好叠在一起。
 - 血量归零后停止操控，按 R 或死亡画面的重开按钮回到出生状态。
 
-相机跟随本机，物理战场为 400×300；不要把 Play 中的运行位置保存成场景出生点。
+相机跟随本机，物理战场为 400×300，背景为上游河谷农田地图；河流、树林和建筑不参与碰撞。相机世界半尺寸保持 (201.2, 151.2)，地图额外绘制 2 单位外沿以覆盖边缘镜头；该外沿不改变飞行边界、碰撞体积或伤害。不要把 Play 中的运行位置保存成场景出生点。返回主菜单会卸载当前 GameScene，再次开始应创建出生点处的新对局。
 
 ## 接线与维护
 
@@ -73,10 +75,10 @@
 
 `AircraftHitbox`提供根`CircleCollider2D`的实际世界半径；`BattleCombatController`在两机固定步后，把当前冻结动作的`CollisionDamage`交给`ContactCombatModel.StepContact`统一结算，不重建血量或保护时钟。没有攻击阶段白名单或第二套回调重复扣血。表现只读战斗状态。
 
-已有出生点时使用 `Open Battle and Play` 即可。`Setup Battle Chase Demo` 用于维护 prefab 和接线，修改机型或战斗参数需退出 Play 再运行。
+已有出生点时使用 `Open Battle and Play` 即可。`Setup Battle Chase Demo` 用于维护 GameScene 中的 prefab 和 AI 接线，修改机型或战斗参数需退出 Play 再运行。Build Settings 保持 StartMenu（0）、GameScene（1）；运行时加载名称使用 `StartMenu` / `GameScene`，保留的 Battle 类名和工具名不代表旧场景仍存在。
 
 ## 验证与历史版本
 
-当前验证入口为[全级强化验证](../03-test/AI全级强化验证.md)，最终生产参数的压力和可反制窗口以该记录为准；[锁轨与四级压迫验证](../03-test/AI敌机锁轨与四级压迫验证.md)、[推进资源版验证](../03-test/AI追赶推进与资源惩罚验证.md)保留历史版本的参数、未达项和结果。
+本轮场景改名、菜单/地图与 AI 集成的复跑状态见[场景改名与上游集成验证](../03-test/场景改名与上游集成验证.md)。[全级强化验证](../03-test/AI全级强化验证.md)保留集成前生产参数的压力和可反制窗口；[锁轨与四级压迫验证](../03-test/AI敌机锁轨与四级压迫验证.md)、[推进资源版验证](../03-test/AI追赶推进与资源惩罚验证.md)保留更早版本的参数、未达项和结果。
 
 此前的 [四级成长与双模式推进](../03-test/AI四级成长与双模式推进验证.md)、[绕后与玩家冲刺](../03-test/AI绕后瞄准与玩家冲刺验证.md)、[碰撞体积与五倍冲撞](../03-test/AI碰撞体积与五倍冲撞验证.md)、[基础追踪](../03-test/AI基础追踪与持续瞄准验证.md)、[移动瞄准与成长修复](../03-test/AI移动瞄准与成长修复验证.md) 等均保留为历史记录。旧复杂 Core 与控制台 `DogfightThreatAI.AiDemo` 使用不同攻击规则，不能当作当前场景的等价演示，见 [tools 说明](../../tools/README.md)。

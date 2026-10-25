@@ -16,9 +16,11 @@ dotnet test tools/DogfightThreatAI.Core.Tests/DogfightThreatAI.Core.Tests.csproj
 
 - `DogfightThreatAI.Core` 直接编译 Unity 工程中的 `Scripts/Core/**/*.cs`，不复制生产逻辑，不引用 Unity。
 - `DogfightThreatAI.Core.Tests` 验证飞行、AI、玩家/敌机推进资源和接触战斗；历史算法及其测试仍保留。
-- 相机可见性、键盘、HUD 与渲染需另在 Unity 验证，见 [Battle 手册](../docs/04-manuals/Battle追击演示.md)。当前记录见 [全级强化验证](../docs/03-test/AI全级强化验证.md)；[锁轨与四级压迫验证](../docs/03-test/AI敌机锁轨与四级压迫验证.md)、[追赶推进与资源惩罚验证](../docs/03-test/AI追赶推进与资源惩罚验证.md) 保留历史版本的参数与结果。
+- 相机可见性、键盘、HUD 与渲染需另在 Unity 验证，见 [Battle 手册](../docs/04-manuals/Battle追击演示.md)。场景改名后的本轮结果见 [集成验证](../docs/03-test/场景改名与上游集成验证.md)；[全级强化验证](../docs/03-test/AI全级强化验证.md)、[锁轨与四级压迫验证](../docs/03-test/AI敌机锁轨与四级压迫验证.md)、[追赶推进与资源惩罚验证](../docs/03-test/AI追赶推进与资源惩罚验证.md) 保留各阶段的参数与结果。
 
 ## 当前 Battle：四级策略与有限追赶
+
+Battle 是本文沿用的玩法名称，实际 Unity 场景已更名为 `GameScene`，路径为 `Assets/_Project/Scenes/GameScene/GameScene.unity`。常规 Play 先进入 `StartMenu`；单场景 AI 复验使用 `Tools → Dogfight Threat AI → Open Battle and Play` 临时直入 GameScene，退出 Play 后恢复 StartMenu 入口。完整导航与地图入口见 [获取与运行](../docs/04-manuals/获取与运行.md)。
 
 默认输入源是 `PursuitChargeInputSource`，难度参数为 `PursuitDifficultyProfile`，观察历史为 `PursuitObservationMemory`。追赶资源由 `PursuitBoostModel` 管理，追赶路线选择在 `PursuitSteeringPlanner` 中完成；`MovingAttackPlanner` 规划移动预警及固定发射轴，`PursuitReentryPath` 负责全级对已观察稳定转弯目标的恢复切入。
 
@@ -82,7 +84,7 @@ dotnet run --project tools/DogfightThreatAI.BalanceProbe/DogfightThreatAI.Balanc
 
 该入口直接使用当前Core，执行四级×12初态×8策略，共384局，正常5HP并使用当前冻结动作的碰撞伤害，每局最长60游戏秒。策略包括静止、直飞、左右固定绕圈、冷却好就短冲、持续长推至耗尽、读预警换向加短冲、保留能量管理推进。输出为逐局JSON与终端分组统计；未出现预警的局在`firstWarning`记-1，终端以60代入表示观察期结束仍未发生，不能解释为恰好60秒发生。
 
-这是无遮挡、无边界的确定性仿真；可见性用跟随玩家的矩形近似，不能代替Unity的真实相机、输入、渲染与原生键盘试玩。输出目录会自动创建。当前版本实测及限制见[全级强化验证](../docs/03-test/AI全级强化验证.md)，旧版本数据见[锁轨与四级压迫验证](../docs/03-test/AI敌机锁轨与四级压迫验证.md)。
+这是无遮挡、无边界的确定性仿真；可见性用跟随玩家的矩形近似，不能代替Unity的真实相机、输入、渲染与原生键盘试玩。输出目录会自动创建。本轮复跑状态见[集成验证](../docs/03-test/场景改名与上游集成验证.md)，集成前生产参数实测及限制见[全级强化验证](../docs/03-test/AI全级强化验证.md)，更早版本数据见[锁轨与四级压迫验证](../docs/03-test/AI敌机锁轨与四级压迫验证.md)。
 
 ## 历史控制台演示
 

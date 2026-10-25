@@ -1,12 +1,12 @@
 # Battle 四级敌机 AI 与加速惩罚说明
 
-更新日期：2026-10-24。本文对应当前 Battle 的单敌机、一伤版本；速度单位为场景单位/秒，时间均为战斗模拟时间。
+更新日期：2026-10-25。本文对应 GameScene 中的单敌机、一伤版本；Battle 沿用为玩法名称，实际场景路径为 `Assets/_Project/Scenes/GameScene/GameScene.unity`。速度单位为场景单位/秒，时间均为战斗模拟时间。
 
-提交时的跨岗位评审范围见[AI原型交接](../04-manuals/AI原型交接.md)，该版本的可携带复验结果见[提交验证摘要](../03-test/evidence/chase-ai-prototype/handoff-validation.md)。
+提交时的跨岗位评审范围见[AI原型交接](../04-manuals/AI原型交接.md)，本轮场景改名与上游集成的复跑状态见[集成验证](../03-test/场景改名与上游集成验证.md)。[原交接版本验证摘要](../03-test/evidence/chase-ai-prototype/handoff-validation.md)保留为集成前基线。
 
 当前 Battle 使用 `PursuitChargeInputSource` 的四级策略，共用 **追踪/截击/侧切 → 完整移动预警与提前锁轨 → 沿公布轴冲撞 → 完整恢复与重入**。敌机追赶和玩家推进分别使用有限资源；路线规划、运动执行与接触伤害分层处理。
 
-操作见 [Battle 手册](../04-manuals/Battle追击演示.md)，当前验证见 [全级强化验证](../03-test/AI全级强化验证.md)。[锁轨与四级压迫验证](../03-test/AI敌机锁轨与四级压迫验证.md)、[追赶推进与资源惩罚验证](../03-test/AI追赶推进与资源惩罚验证.md) 与 [四级成长与双模式推进验证](../03-test/AI四级成长与双模式推进验证.md) 保留历史版本的参数和结果。
+操作见 [Battle 手册](../04-manuals/Battle追击演示.md)。常规编辑器 Play 由 `GameEntrySetup` 从 StartMenu 启动，经“开始游戏”进入 GameScene，也可返回主菜单；`Open Battle and Play` 用于临时直入 AI 场景，退出 Play 后恢复 StartMenu 入口。菜单、地图与导航说明见[场景切换接入](../04-manuals/场景切换接入.md)。[全级强化验证](../03-test/AI全级强化验证.md)、[锁轨与四级压迫验证](../03-test/AI敌机锁轨与四级压迫验证.md)、[追赶推进与资源惩罚验证](../03-test/AI追赶推进与资源惩罚验证.md) 与 [四级成长与双模式推进验证](../03-test/AI四级成长与双模式推进验证.md) 保留各阶段的参数和结果。
 
 ## 当前玩法概览
 
@@ -14,6 +14,7 @@
 - 四级强度来自观察、预测、路线选择、追赶性能和恢复节奏的共同变化。每级有效接触均扣1HP，预警时长和冲撞速度保持一致。
 - 玩家初始5HP，受击后进入0.7秒无敌帧。碰撞在各阶段都结算；移动预警期间也应避开敌机机身。
 - Shift用于持续提速和拉开距离，Space用于短时位移。二者共用60能量；耗尽会触发过热降速，因此需要为反制预留能量。
+- 河谷地图沿用 400×300 的物理战场，相机世界半尺寸为 (201.2, 151.2)。地图额外绘制 2 单位外沿以覆盖边缘镜头；外沿只影响背景渲染，不扩大飞行边界、不参与碰撞，也不改变伤害。
 
 ## 四级成长与信息边界
 
@@ -126,7 +127,7 @@ Shift/Space/转向/刹车 → KeyboardInputSource + PlayerBoostModel → FlightI
 
 `ChaseAiInputSource` 捕获 `PlayerController.State`、可见推进线索和只读相机几何，设置新起手可见性并转交难度请求；不读取 Art 位置来瞄准。`IFlightMotionSource.MotionCommand` 区分普通惯性、有限加速和定速覆盖，`FlightModel.Step` 是唯一运动写入者。玩家基础机型仍为 9/240°每秒、敌机基础资产为 9/210°每秒，敌机各档实际性能由命令提供。`BattleCombatController` 在两机推进后统一结算接触。Core 不引用 Unity，不直接写 Transform 或生命值。
 
-主要入口：`PursuitChargeInputSource`、`PursuitDifficultyProfile`、`PursuitObservationMemory`、`PursuitSteeringPlanner`、`PursuitBoostModel`、`MovingAttackPlanner`、`PursuitReentryPath`、`PlayerBoostModel`、`IFlightMotionSource`、`IVisiblePropulsionCueSource`、`ChaseAiInputSource`、`KeyboardInputSource`、`BattleCombatController`、`AircraftHitbox`、`AttackCueView`。纯Core测试位于`tools/DogfightThreatAI.Core.Tests`，最终生产版压力、近距反制及场景证据见[全级强化验证](../03-test/AI全级强化验证.md)。隔离筛选候选和历史版本的成绩不能替代本版结果。
+主要入口：`PursuitChargeInputSource`、`PursuitDifficultyProfile`、`PursuitObservationMemory`、`PursuitSteeringPlanner`、`PursuitBoostModel`、`MovingAttackPlanner`、`PursuitReentryPath`、`PlayerBoostModel`、`IFlightMotionSource`、`IVisiblePropulsionCueSource`、`ChaseAiInputSource`、`KeyboardInputSource`、`BattleCombatController`、`AircraftHitbox`、`AttackCueView`。纯Core测试位于`tools/DogfightThreatAI.Core.Tests`，本轮场景与入口复验见[集成验证](../03-test/场景改名与上游集成验证.md)，集成前生产参数的压力、近距反制及场景证据见[全级强化验证](../03-test/AI全级强化验证.md)。隔离筛选候选和历史版本的成绩不能替代本轮结果。
 
 ## 历史实现与后续规划
 

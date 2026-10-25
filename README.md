@@ -2,19 +2,25 @@
 
 一个用于验证飞行手感与敌机行为的 2D 俯视空战原型。
 
-本次AI原型的启动、共享接口变更和待评审差异见[交接说明](docs/04-manuals/AI原型交接.md)，提交版本的复验以[可携带验证摘要](docs/03-test/evidence/chase-ai-prototype/handoff-validation.md)为准。
+本次AI原型的启动、共享接口变更和待评审差异见[交接说明](docs/04-manuals/AI原型交接.md)。场景改名与上游集成的复跑状态见[集成验证](docs/03-test/场景改名与上游集成验证.md)；[原交接版本验证摘要](docs/03-test/evidence/chase-ai-prototype/handoff-validation.md)保留为集成前基线。
 
 ## 当前可玩内容
 
 - 带惯性、转向与漂移的飞机操控。
+- 开始界面包含任意键进入、菜单过渡、设置、操作说明和制作名单，支持 **StartMenu → 开始游戏 → GameScene → 返回主菜单** 的双向场景导航。
+- GameScene 使用河流、农田、村落与林地组成的河谷农田背景；地形不参与碰撞和飞行模拟。
 - 单敌机四级成长：全级共享观察年龄补偿、转弯历史预测和恢复重入，逐级增加截击、稳定侧切与可见躲避线索运用；各级有不同常速、转向和有限追赶推进。
 - 按住 Shift 线性长推、点按 Space 即时短冲，共用 60 能量，带独立短冲冷却和耗尽过热。
 - 两机碰撞体积、5 点血量、每次有效接触扣 1 点、受击抖动和 0.7 秒无敌、死亡与重开。
 - 威胁网格、机炮/导弹和联机仍是后续规划。
 
-## 打开 Battle
+## 运行游戏与 Battle 玩法
 
-使用 Unity **2022.3.62f3c1** 打开 `src/client/DogfightThreatAI`，进入 `Assets/_Project/Scenes/Battle/Battle.unity` 后点击 Play，或使用菜单 `Tools → Dogfight Threat AI → Open Battle and Play`。
+使用 Unity **2022.3.62f3c1** 打开 `src/client/DogfightThreatAI`。打开 `Assets/_Project/Scenes/StartMenu/StartMenu.unity`，或选择 `Tools → Dogfight Threat AI → 打开完整游戏入口`，点击 Play 后按任意键显示菜单，再点“开始游戏”进入 `GameScene`。右上角“返回主菜单”可回到 `StartMenu`。常规编辑器 Play 由 `GameEntrySetup` 统一从 StartMenu 启动。
+
+本文沿用 **Battle** 指代四级 AI 追击玩法，实际场景名为 `GameScene`，路径为 `Assets/_Project/Scenes/GameScene/GameScene.unity`。单独复验 AI 时使用 `Tools → Dogfight Threat AI → Open Battle and Play` 临时直入该场景，退出 Play 后恢复常规 StartMenu 入口；仅打开 GameScene 后点击普通 Play 仍会先进入菜单。Build Settings 顺序为 StartMenu（0）、GameScene（1）。
+
+获取工程、依赖和完整运行流程见[获取与运行说明](docs/04-manuals/获取与运行.md)，菜单功能见[开始界面说明](docs/04-manuals/开始界面.md)，地图数据与维护见[河谷农田地图说明](docs/04-manuals/河谷农田地图.md)，导航接线见[场景切换接入](docs/04-manuals/场景切换接入.md)。
 
 点击 Game 窗口，用英文输入法操作：**W 加速、S 刹车、A/D 转向、按住 Shift 长推、点按 Space 短冲、R 重开**。F1～F4 固定试玩对应难度，F5 恢复自动成长；HUD 也提供难度选择。追赶推进及其尾段、瞄准、冲撞和恢复中的难度请求会在下一动作边界生效，保留已消耗能量和冷却。
 
@@ -30,7 +36,7 @@
 
 两机各有半径0.5的圆形碰撞体积，**任何阶段的有效接触均扣1点血**，5点血量依次变为5→4→3→2→1→0，五次有效真实命中击毁。受击时玩家机身短抖并闪烁，进入0.7秒无敌；无敌结束仍接触可再次受伤。高速碰撞使用连续扫掠，避免两步间穿过而漏判。
 
-原作参考来自《最后生还者》的带时间戳目标记忆、策略/动作分层、有限侧切与可读攻击节奏，本项目把这些思路适配为单敌机空战中的推进预算与压力；没有复制原作AI，也没有掩体或小队系统。详细操作见[Battle追击演示](docs/04-manuals/Battle追击演示.md)，当前验证见[全级强化验证](docs/03-test/AI全级强化验证.md)。[锁轨与四级压迫验证](docs/03-test/AI敌机锁轨与四级压迫验证.md)、[推进资源版验证](docs/03-test/AI追赶推进与资源惩罚验证.md)及更早记录保留历史版本的参数和结果。
+原作参考来自《最后生还者》的带时间戳目标记忆、策略/动作分层、有限侧切与可读攻击节奏，本项目把这些思路适配为单敌机空战中的推进预算与压力；没有复制原作AI，也没有掩体或小队系统。详细操作见[Battle追击演示](docs/04-manuals/Battle追击演示.md)，本轮集成复验见[场景改名与上游集成验证](docs/03-test/场景改名与上游集成验证.md)。[全级强化验证](docs/03-test/AI全级强化验证.md)、[锁轨与四级压迫验证](docs/03-test/AI敌机锁轨与四级压迫验证.md)、[推进资源版验证](docs/03-test/AI追赶推进与资源惩罚验证.md)及更早记录保留各阶段的参数和结果。
 
 ## 仓库结构
 
@@ -56,4 +62,5 @@ dotnet test tools/DogfightThreatAI.Core.Tests/DogfightThreatAI.Core.Tests.csproj
 
 ## 变更记录
 
+- 2026-10-25：接入上游开始界面、河谷农田地图及双向场景导航；现行场景路径改为 StartMenu / GameScene，保留四级 AI、玩家推进与真实接触战斗。
 - 2026-10-24：补充AI原型交接、固定Unity版本与可携带验证入口。

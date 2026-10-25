@@ -1,6 +1,7 @@
 using System.Collections;
 using DogfightThreatAI.Gameplay;
 using DogfightThreatAI.Gameplay.Combat;
+using DogfightThreatAI.UI.Navigation;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,7 +19,7 @@ namespace DogfightThreatAI.Tests.PlayMode
         {
             _originalTimeScale = Time.timeScale;
             Time.timeScale = 0f;
-            yield return SceneManager.LoadSceneAsync("Battle", LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneNavigation.GameScene, LoadSceneMode.Single);
             _combat = Object.FindObjectOfType<BattleCombatController>();
             Assert.IsNotNull(_combat);
         }

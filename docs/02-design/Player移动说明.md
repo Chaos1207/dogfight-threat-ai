@@ -2,9 +2,9 @@
 
 适用版本：Unity 2022.3.62f3c1
 
-最后更新：2026-10-24
+最后更新：2026-10-25
 
-相关文档：[架构约定.md](架构约定.md)、[AI原型交接](../04-manuals/AI原型交接.md)、[提交验证摘要](../03-test/evidence/chase-ai-prototype/handoff-validation.md)
+相关文档：[架构约定.md](架构约定.md)、[AI原型交接](../04-manuals/AI原型交接.md)、[本轮集成验证](../03-test/场景改名与上游集成验证.md)、[集成前提交验证摘要](../03-test/evidence/chase-ai-prototype/handoff-validation.md)
 
 ## 一、代码位置与职责
 
@@ -91,26 +91,28 @@ Rigidbody2D 的主要设置：
 
 ### 2.3 场景配置
 
-`Assets/_Project/Scenes/Battle/Battle.unity` 当前包含：
+`Assets/_Project/Scenes/GameScene/GameScene.unity` 当前承载 Battle 追击玩法，并接入河谷农田地图与返回菜单入口：
 
 | 物体 | 配置 |
 |---|---|
 | Main Camera | Orthographic Size 5，挂 CameraFollow |
 | CameraFollow | Target为玩家Art子物体，读取未受击抖动的RenderPosition；Smooth Time 0.03，Look Ahead 0，World Half Size (201.2, 151.2) |
 | Player_Ship01 | 场景实例的 Arena Half Size 为 (200, 150) |
-| DebugStarfield | 提供视差星点参照 |
-| Grid Debug View | World Size (400, 300)，Cell Size 4 |
+| RiverValley Map | `BattleMapView` 显示河谷农田背景，物理地图 400×300，另绘制2单位外沿，地形无碰撞体 |
+| Grid Debug View | World Size (400, 300)，Cell Size 4，`drawInPlayMode = false` |
 | Enemy_Chaser01 | 敌机输入桥接、真实体积、移动预警与推进表现 |
 | BattleCombat | 两机固定步之后统一结算接触、5HP与0.7秒保护，提供HUD和重开 |
+| 返回主菜单 | 右上角按钮调用 `SceneNavigation.ReturnToMainMenu()`，卸载 GameScene 并回到 StartMenu |
 
-Build Settings 当前顺序为：Menu（0）、Battle（1）。
+Build Settings 当前顺序为：StartMenu（0）、GameScene（1），路径分别为 `Assets/_Project/Scenes/StartMenu/StartMenu.unity` 和 `Assets/_Project/Scenes/GameScene/GameScene.unity`。旧 Menu / Battle 场景的 `.meta` GUID 保留，加载名称和硬编码路径使用新名称；导航实现见[场景切换接入](../04-manuals/场景切换接入.md)。
 
 ## 三、运行与验证
 
-1. 打开 `Battle.unity`。
-2. 点击 Play。
+1. 打开 `Assets/_Project/Scenes/StartMenu/StartMenu.unity`，或选择 `Tools → Dogfight Threat AI → 打开完整游戏入口`。
+2. 点击 Play，按任意键显示菜单，再点“开始游戏”进入 GameScene。常规 Play 由 `GameEntrySetup` 从 StartMenu 启动；单独复验 AI 使用 `Tools → Dogfight Threat AI → Open Battle and Play` 临时直入 GameScene，退出 Play 后恢复 StartMenu 入口。
 3. 使用W/S控制油门、A/D转向，Shift长推、Space短冲、R重开；F1～F4固定敌机难度，F5自动。
-4. 进入`Window → General → Test Runner`，分别运行EditMode与PlayMode。测试数量、提交版本的执行结果和证据见[可携带验证摘要](../03-test/evidence/chase-ai-prototype/handoff-validation.md)，不沿用早期16项移动测试的数量。
+4. 点击右上角“返回主菜单”，再次开始时应得到出生点处的新对局。
+5. 进入`Window → General → Test Runner`，分别运行EditMode与PlayMode。本轮执行结果和证据见[场景改名与上游集成验证](../03-test/场景改名与上游集成验证.md)；[可携带验证摘要](../03-test/evidence/chase-ai-prototype/handoff-validation.md)保留为集成前基线，不沿用其数量作为本轮结果。
 
 预期行为：
 
@@ -202,10 +204,11 @@ Drag 的半衰期可由 `ln(2) / drag` 估算。当前值 0.1 对应约 6.9 秒�
 当前采用跟随相机与大地图组合：
 
 - 地图范围 400×300，边界半尺寸为 (200, 150)。
+- 相机的世界边界半尺寸保持 (201.2, 151.2)，地图在物理范围外额外绘制 2 单位背景以覆盖边缘镜头。该外沿只用于渲染，不扩大战场边界，不参与碰撞，也不改变接触伤害。
 - 相机通过 `CameraFollow` 跟随玩家，`Smooth Time` 为 0.03。
 - 相机目标仍为玩家的`Art`子物体，但有`PlayerView`时读取未加受击抖动的`RenderPosition`，保持插值跟随且不把抖动传给镜头。
 - `Look Ahead` 当前为 0，飞机保持在屏幕中心附近。
-- `DebugStarfield` 提供视差参照，避免飞机看起来钉在屏幕上。
+- `BattleMapView` 按镜头覆盖范围加载河谷农田地图分块，河流、树林和建筑仅作背景，不参与碰撞与 Core 模拟；数据和维护入口见[河谷农田地图](../04-manuals/河谷农田地图.md)。
 
 如果改为固定镜头，可移除 `CameraFollow`，将相机固定在 (0, 0, -10)，并把战场尺寸缩小到一屏范围。当前代码同时支持两种方式，`CameraFollow` 和 `Bounds2D` 都是可选项。
 
@@ -221,9 +224,11 @@ Drag 的半衰期可由 `ln(2) / drag` 估算。当前值 0.1 对应约 6.9 秒�
 
 - [架构约定.md](架构约定.md)：分层、目录、提交规范。
 - [AI原型交接](../04-manuals/AI原型交接.md)：共享动作、碰撞与可见线索契约的评审范围。
-- [提交验证摘要](../03-test/evidence/chase-ai-prototype/handoff-validation.md)：可携带证据与执行结果。
+- [场景改名与上游集成验证](../03-test/场景改名与上游集成验证.md)：本轮菜单、地图、AI与场景入口的复跑状态。
+- [提交验证摘要](../03-test/evidence/chase-ai-prototype/handoff-validation.md)：集成前可携带证据与执行结果。
 - 立项书：《基于实时威胁评估与动态决策的飞机对战游戏》。
 
 ## 变更记录
 
+- 2026-10-25：更新 StartMenu / GameScene 路径、Build Settings、常规与 AI 直入流程，补充河谷地图和返回菜单接线。
 - 2026-10-24：补充MotionCommand、推进资源、真实体积接触、稳定相机跟随及提交验证入口。

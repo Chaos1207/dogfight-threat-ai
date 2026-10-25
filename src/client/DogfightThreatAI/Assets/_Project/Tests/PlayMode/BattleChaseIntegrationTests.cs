@@ -8,6 +8,7 @@ using DogfightThreatAI.Core.Math;
 using DogfightThreatAI.Gameplay;
 using DogfightThreatAI.Gameplay.Combat;
 using DogfightThreatAI.Gameplay.InputSource;
+using DogfightThreatAI.UI.Navigation;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -40,7 +41,7 @@ namespace DogfightThreatAI.Tests.PlayMode
         IEnumerator LoadFreshBattle(float elapsed)
         {
             Time.timeScale = 0f;
-            yield return SceneManager.LoadSceneAsync("Battle", LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneNavigation.GameScene, LoadSceneMode.Single);
             FindSceneAircraft();
             Assert.IsTrue(_player.IsInitialized);
             Assert.IsTrue(_enemy.IsInitialized);
@@ -56,7 +57,7 @@ namespace DogfightThreatAI.Tests.PlayMode
             // Inspect the saved spawn and wiring before automatic flight. A fast enemy
             // can legitimately leave view during a variable number of setup frames.
             Time.timeScale = 0f;
-            yield return SceneManager.LoadSceneAsync("Battle", LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneNavigation.GameScene, LoadSceneMode.Single);
             FindSceneAircraft();
             Assert.AreEqual(2, Object.FindObjectsOfType<PlayerController>().Length);
             Assert.AreEqual(1, Object.FindObjectsOfType<BattleCombatController>().Length);
@@ -420,7 +421,7 @@ namespace DogfightThreatAI.Tests.PlayMode
         public IEnumerator FirstSimulationStep_InterpolationUsesEnemySpawnState()
         {
             Time.timeScale = 0f;
-            yield return SceneManager.LoadSceneAsync("Battle", LoadSceneMode.Single);
+            yield return SceneManager.LoadSceneAsync(SceneNavigation.GameScene, LoadSceneMode.Single);
             FindSceneAircraft();
             FlightState spawn = _enemy.State;
             typeof(PlayerController).GetMethod("FixedUpdate", PrivateInstance).Invoke(_enemy, null);
